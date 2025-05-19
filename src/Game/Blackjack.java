@@ -131,6 +131,7 @@ public class Blackjack {
         }
     }
     public void displayCroupierCards() {
+        System.out.print("Karty krupiera: ");
         croupier.printCards();
     }
     public void displayResults() {
