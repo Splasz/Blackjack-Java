@@ -1,33 +1,22 @@
 package Server;
 
+import Game.Blackjack;
+
+import java.net.*;
+import java.io.*;
+
 import java.net.*;
 import java.io.*;
 
 public class BlackjackServer {
     public static void main(String[] args) throws IOException {
-        int port = 5000;
+        ServerSocket serverSocket = new ServerSocket(12345);
+        System.out.println("Serwer uruchomiony...");
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server listening on port " + port);
+        while (true) {
             Socket clientSocket = serverSocket.accept();
-            System.out.println("Client connected");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-            BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
-            String inputLinem, outputLinem;
-
-            outputLinem = blackjackProtocol.processInput(null);
-            out.println(outputLinem);
-
-            while ((inputLinem = in.readLine()) != null) {
-                outputLinem = blackjackProtocol.processInput(inputLinem);
-                out.println(outputLinem);
-                if (outputLinem.equals("Bye.")) break;
-            }
-
-            clientSocket.close();
+            System.out.println("Nowy klient: " + clientSocket.getInetAddress());
+            new Thread(new ClientHandler(clientSocket)).start();
         }
     }
 }
