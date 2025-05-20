@@ -60,6 +60,9 @@ public class Blackjack {
     }
     public void croupierTurn() {
         croupier.setHidenCard(false);
+        System.out.println("Krupier odkyrwa karte: ");
+        croupier.printCards();
+        System.out.println("----------------------");
 
         System.out.println("Ruch Krupiera:");
         int points = croupier.getScore();

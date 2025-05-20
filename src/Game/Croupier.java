@@ -24,7 +24,7 @@ public class Croupier {
 
     public void addCard(Card card) {
         cards.add(card);
-        score += card.getIntValue(score);
+        score += card.getIntValue(score, this);
     }
     public void printCards() {
         if (hidenCard) {
@@ -32,7 +32,7 @@ public class Croupier {
             System.out.print(cards.get(0));
             System.out.print(", ???");
             System.out.println("]");
-            System.out.println("Punkty: " + cards.get(0).getIntValue(score));
+            System.out.println("Punkty: " + cards.get(0).getIntValue(score,this));
         } else {
             System.out.println(cards);
             System.out.println("Punkty: " + score);
