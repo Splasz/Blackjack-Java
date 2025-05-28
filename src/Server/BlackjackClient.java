@@ -3,25 +3,48 @@ package Server;
 import java.net.*;
 import java.io.*;
 
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
 public class BlackjackClient {
     public static void main(String[] args) {
+        String hostname = "localhost";
+        int port = 2222;
 
+        try (Socket socket = new Socket(hostname, port);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             Scanner scanner = new Scanner(System.in)) {
 
-        try (
-                Socket socket = new Socket("localhost", 12345);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader console = new BufferedReader(new InputStreamReader(System.in))
-        ) {
-            String serverMessage;
-            while ((serverMessage = in.readLine()) != null) {
-                System.out.println("Serwer: " + serverMessage);
-                String userInput = console.readLine();
-                out.println(userInput);
-                if ("QUIT".equalsIgnoreCase(userInput)) break;
+            System.out.println("Połączono z serwerem Blackjack.");
+
+            String response;
+            while ((response = in.readLine()) != null && !response.isEmpty()) {
+                System.out.println(response);
+                if (!in.ready()) break;
             }
+
+            while (true) {
+
+                String command = scanner.nextLine();
+                out.println(command);
+
+                while ((response = in.readLine()) != null) {
+                    System.out.println(response);
+                    if (!in.ready()) break;
+                }
+
+                if (command.equalsIgnoreCase("QUIT")) {
+                    System.out.println("Zamykam połączenie.");
+                    break;
+                }
+            }
+
+        } catch (UnknownHostException e) {
+            System.err.println("Nieznany host: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Błąd połączenia: " + e.getMessage());
         }
     }
 }

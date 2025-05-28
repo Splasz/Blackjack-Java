@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Deck {
-    private ArrayList<Card> deck = new ArrayList<>();
-    private String[] values = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-    private String[] suits = {"♠", "♥", "♣", "♦"};
+    private final ArrayList<Card> deck = new ArrayList<>();
+    private final String[] values = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    private final String[] suits = {"♠", "♥", "♣", "♦"};
 
     public void shuffle() {
         Random rand = new Random();
@@ -16,6 +16,9 @@ public class Deck {
         }
     }
     public Card draw() {
+        if (deck.isEmpty()){
+            throw new IllegalStateException("Talia jest pusta");
+        }
         return deck.remove(deck.size() - 1);
     }
 

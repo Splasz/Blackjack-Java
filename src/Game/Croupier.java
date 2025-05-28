@@ -21,6 +21,13 @@ public class Croupier {
     public void setHidenCard(boolean hidenCard) {
         this.hidenCard = hidenCard;
     }
+    public String getVisibleCards() {
+        if (hidenCard && cards.size() > 1) {
+            return "[" + cards.get(0).toString() + ", ???]\nPunkty: " + cards.get(0).getIntValue(score, this);
+        } else {
+            return cards.toString() + "\nPunkty: " + score;
+        }
+    }
 
     public void addCard(Card card) {
         cards.add(card);

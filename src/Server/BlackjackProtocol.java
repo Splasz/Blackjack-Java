@@ -1,39 +1,46 @@
 package Server;
 
+import Game.Player;
+
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+
+import static Server.BlackjackServer.croupier;
+import static Server.BlackjackServer.deck;
 
 public class BlackjackProtocol {
-    private static final int WAITING = 0;
-    private static final int START = 1;
-    private static final int ANOTHER = 2;
-    private int state = WAITING;
+    private int PlayerIndex = 0;
 
-    public String processInput(String theInput) {
-        String theOutput = null;
+    public BlackjackProtocol() {
 
-        if (state == WAITING) {
-            theOutput = "Witaj w grze w Blackjacka! Napisz 'start' aby zagrac lub 'exit' aby wyjsc.";
-            state = START;
+    }
 
-        } else if (state == START) {
-            if (theInput.equalsIgnoreCase("start")) {
-                theOutput = "Rozpoczynamy gre. (tu logika gry...) Napisz 'again' aby zagrac ponownie lub 'exit'.";
-                state = ANOTHER;
-            } else if (theInput.equalsIgnoreCase("exit")) {
-                theOutput = "zakoncz";
-            } else {
-                theOutput = "Nieznana komenda. Napisz 'start' lub 'exit'.";
+    public synchronized void startGame(PrintWriter out){
+        out.println("Start");
+        for (int i = 0; i < 2; i++) {
+            for (Player player : BlackjackServer.players) {
+                out.println("Gracz:" + player.getHandString());
+                player.addCard(deck.draw());
             }
+            out.println("Krupier: " + croupier.getVisibleCards());
+            croupier.addCard(deck.draw());
+        }
+    }
 
-        } else if (state == ANOTHER) {
-            if (theInput.equalsIgnoreCase("again")) {
-                theOutput = "Nowa gra. (tu logika gry...) Napisz 'again' lub 'exit'.";
-            } else if (theInput.equalsIgnoreCase("exit")) {
-                theOutput = "zakoncz";
-            } else {
-                theOutput = "Nieznana komenda. Napisz 'again' lub 'exit'.";
+    public synchronized void waitTurn(Player player, BufferedReader in, PrintWriter out) {
+        while (!BlackjackServer.players.get(PlayerIndex).equals(player)) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
-        return theOutput;
+        out.println("Twoja tura!");
+        out.println(player.getHandString());
+
+
+        PlayerIndex = (PlayerIndex + 1) % BlackjackServer.players.size();
+        notifyAll();
     }
 }

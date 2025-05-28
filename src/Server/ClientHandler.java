@@ -1,13 +1,16 @@
 package Server;
 
+import Game.Player;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-class ClientHandler extends Thread {
-    private final Socket socket;
+public class ClientHandler implements Runnable {
+    private Socket socket;
+    private Player player;
     private BufferedReader in;
     private PrintWriter out;
 
@@ -20,23 +23,18 @@ class ClientHandler extends Thread {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            out.println("Witaj w blackjacku!");
-            String input;
+            out.println("Witaj! Podaj swój nick:");
+            String name = in.readLine();
+            player = new Player(name);
 
-            while ((input = in.readLine()) != null) {
-                System.out.println("Klient "+ Thread.currentThread().getName() +  " mówi: " + input);
-                if (input.equalsIgnoreCase("exit")) {
-                    out.println("Do widzenia!");
-                    break;
-                } else {
-                    out.println("Komenda nierozpoznana.");
-                }
-            }
+            BlackjackServer.players.add(player);
+            out.println("Czekaj na swoją turę...");
 
-            socket.close();
+            BlackjackServer.blackjackProtocol.startGame(out);
+            BlackjackServer.blackjackProtocol.waitTurn(player, in, out);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Błąd klienta.");
         }
     }
 }
-

@@ -38,6 +38,9 @@ public class Player {
         this.roundResult = roundResult;
 
     }
+    public String getHandString() {
+        return hand.toString() + "\nPunkty: " + score;
+    }
 
     public void addCard(Card card) {
         hand.add(card);
