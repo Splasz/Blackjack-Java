@@ -3,8 +3,6 @@ package Server;
 import java.net.*;
 import java.io.*;
 
-import java.io.*;
-import java.net.*;
 import java.util.Scanner;
 
 public class BlackjackClient {
@@ -37,6 +35,13 @@ public class BlackjackClient {
 
                 if (command.equalsIgnoreCase("QUIT")) {
                     System.out.println("Zamykam połączenie.");
+                    try {
+                        BlackjackServer.players.removeLast();
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+
+
                     break;
                 }
             }

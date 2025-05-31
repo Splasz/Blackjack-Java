@@ -10,6 +10,7 @@ public class Player {
         WIN, DRAW, LOSE, BLACKJACK, NULL
     }
     private RoundResult roundResult;
+    private boolean ready = false;
 
     public Player(String name) {
         this.name = name;
@@ -37,6 +38,12 @@ public class Player {
     public void setRoundResult(RoundResult roundResult) {
         this.roundResult = roundResult;
 
+    }
+    public boolean isReady() {
+        return ready;
+    }
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
     public String getHandString() {
         return hand.toString() + "\nPunkty: " + score;

@@ -7,24 +7,24 @@ import Game.Player;
 import java.net.*;
 import java.io.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class BlackjackServer {
-    public static List<Player> players = Collections.synchronizedList(new ArrayList<>());
-    public static Croupier croupier = new Croupier();
-    public static Deck deck = new Deck();
-    public static BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
+    public static List<Player> players = new ArrayList<>();
+    public static List<ClientHandler> clientHandlers = new ArrayList<>();
+    public static final BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
+
+    public static boolean gameStarted = false;
 
     public static void main(String[] args) throws IOException {
-        deck.shuffle();
 
         try (ServerSocket serverSocket = new ServerSocket(2222)) {
             System.out.println("Serwer uruchomiany...");
             while (true) {
                 Socket clientSocket = serverSocket.accept();
+                System.out.println("Nowy klient połączony");
                 new Thread(new ClientHandler(clientSocket)).start();
+                System.out.println("Lista graczy: " + players);
             }
         }catch (Exception e){
             e.printStackTrace();

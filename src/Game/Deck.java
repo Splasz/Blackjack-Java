@@ -15,9 +15,10 @@ public class Deck {
             deck.add(card);
         }
     }
+
     public Card draw() {
-        if (deck.isEmpty()){
-            throw new IllegalStateException("Talia jest pusta");
+        if (deck.isEmpty()) {
+            shuffle();
         }
         return deck.remove(deck.size() - 1);
     }

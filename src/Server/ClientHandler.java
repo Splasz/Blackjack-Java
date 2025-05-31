@@ -17,6 +17,13 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket) {
         this.socket = socket;
     }
+    public PrintWriter getWriter() {
+        return out;
+    }
+    public Player getPlayer() {
+        return player;
+    }
+
 
     public void run() {
         try {
@@ -27,14 +34,28 @@ public class ClientHandler implements Runnable {
             String name = in.readLine();
             player = new Player(name);
 
-            BlackjackServer.players.add(player);
-            out.println("Czekaj na swoją turę...");
+            out.println("Witaj " + player.getPlayerName());
 
-            BlackjackServer.blackjackProtocol.startGame(out);
+            BlackjackServer.players.add(player);
+            BlackjackServer.clientHandlers.add(this);
+
+            BlackjackServer.blackjackProtocol.isPlayerReady(player, in, out);
+
+            synchronized (BlackjackServer.blackjackProtocol) {
+                if (!BlackjackServer.gameStarted && BlackjackServer.blackjackProtocol.isAllPLayersReady()) {
+                    BlackjackServer.blackjackProtocol.startGame();
+                }
+            }
+
+            while (!BlackjackServer.gameStarted) {
+                Thread.sleep(100);
+            }
             BlackjackServer.blackjackProtocol.waitTurn(player, in, out);
 
         } catch (IOException e) {
             System.err.println("Błąd klienta.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
