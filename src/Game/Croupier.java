@@ -1,5 +1,6 @@
 package Game;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Croupier {
@@ -33,17 +34,17 @@ public class Croupier {
         cards.add(card);
         score += card.getIntValue(score, this);
     }
-    public void printCards() {
+    public void printCards(PrintWriter out) {
         if (hidenCard) {
-            System.out.print("[");
-            System.out.print(cards.get(0));
-            System.out.print(", ???");
-            System.out.println("]");
-            System.out.println("Punkty: " + cards.get(0).getIntValue(score,this));
+            out.print("[");
+            out.print(cards.get(0));
+            out.print(", ???");
+            out.println("]");
+            out.println("Punkty: " + cards.get(0).getIntValue(score,this));
         } else {
-            System.out.println(cards);
-            System.out.println("Punkty: " + score);
+            out.println(cards);
+            out.println("Punkty: " + score);
         }
-        System.out.println();
+        out.println();
     }
 }

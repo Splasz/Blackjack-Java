@@ -39,23 +39,10 @@ public class ClientHandler implements Runnable {
             BlackjackServer.players.add(player);
             BlackjackServer.clientHandlers.add(this);
 
-            BlackjackServer.blackjackProtocol.isPlayerReady(player, in, out);
-
-            synchronized (BlackjackServer.blackjackProtocol) {
-                if (!BlackjackServer.gameStarted && BlackjackServer.blackjackProtocol.isAllPLayersReady()) {
-                    BlackjackServer.blackjackProtocol.startGame();
-                }
-            }
-
-            while (!BlackjackServer.gameStarted) {
-                Thread.sleep(100);
-            }
-            BlackjackServer.blackjackProtocol.waitTurn(player, in, out);
+            BlackjackServer.blackjackProtocol.runGame(player, in, out);
 
         } catch (IOException e) {
             System.err.println("Błąd klienta.");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 }

@@ -13,6 +13,7 @@ public class BlackjackServer {
     public static List<Player> players = new ArrayList<>();
     public static List<ClientHandler> clientHandlers = new ArrayList<>();
     public static final BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
+    public static int finishedPlayers = 0;
 
     public static boolean gameStarted = false;
 

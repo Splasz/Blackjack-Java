@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Blackjack {
+
     private final Deck deck = new Deck();
     private final ArrayList<Player> players = new ArrayList<>();
     private final Croupier croupier = new Croupier();
@@ -23,7 +24,7 @@ public class Blackjack {
             }
             dealCardToCroupier();
             System.out.println("Karty krupiera:");
-            croupier.printCards();
+//            croupier.printCards();
             System.out.println("------------------------------");
         }
     }
@@ -61,7 +62,7 @@ public class Blackjack {
     public void croupierTurn() {
         croupier.setHidenCard(false);
         System.out.println("Krupier odkyrwa karte: ");
-        croupier.printCards();
+//        croupier.printCards();
         System.out.println("----------------------");
 
         System.out.println("Ruch Krupiera:");
@@ -71,7 +72,7 @@ public class Blackjack {
             do {
                 croupier.addCard(deck.draw());
                 points = croupier.getScore();
-                croupier.printCards();
+//                croupier.printCards();
             } while (points < 16);
         }
         System.out.println("----------------------");
@@ -135,7 +136,7 @@ public class Blackjack {
     }
     public void displayCroupierCards() {
         System.out.print("Karty krupiera: ");
-        croupier.printCards();
+//        croupier.printCards();
     }
     public void displayResults() {
         for (Player player : players) {
