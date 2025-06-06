@@ -56,10 +56,10 @@ public class Card {
             case "K":
                 return 10;
             case "A":
-                if (points + 11 > 21){
-                    return 1;
-                } else if (!croupier.isHidenCard()){
+                if (!croupier.isHidenCard()){
                     return 11;
+                } else if (points + 11 > 21){
+                    return 1;
                 }
             default:
                 return 0;

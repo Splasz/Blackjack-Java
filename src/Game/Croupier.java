@@ -15,7 +15,8 @@ public class Croupier {
         this.score = score;
     }
     public ArrayList<Card> getCards() {
-        return cards; }
+        return cards;
+    }
     public boolean isHidenCard() {
         return hidenCard;
     }
@@ -29,7 +30,9 @@ public class Croupier {
             return cards.toString() + "\nPunkty: " + score;
         }
     }
-
+    public void resetCards() {
+        cards.clear();
+    }
     public void addCard(Card card) {
         cards.add(card);
         score += card.getIntValue(score, this);
@@ -40,7 +43,7 @@ public class Croupier {
             out.print(cards.get(0));
             out.print(", ???");
             out.println("]");
-            out.println("Punkty: " + cards.get(0).getIntValue(score,this));
+            out.println("Punkty: " + cards.get(0).getIntValue(score, this));
         } else {
             out.println(cards);
             out.println("Punkty: " + score);

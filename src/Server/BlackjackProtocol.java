@@ -50,17 +50,14 @@ public class BlackjackProtocol {
                     }
                 }
                 if (BlackjackServer.finishedPlayers == BlackjackServer.players.size()){
-                    croupierTurn(out);
+                    croupierTurn();
                     endRound();
 
-                    BlackjackServer.finishedPlayers = 0;
-                    BlackjackServer.gameStarted = false;
+
                     BlackjackServer.class.notifyAll();
                 }
             }
-
-
-
+            resetGame();
         }
     }
 
@@ -154,6 +151,7 @@ public class BlackjackProtocol {
             for (Player player : BlackjackServer.players) {
                 out.println(player.getPlayerName() + ": " + player.getRoundResult());
             }
+            out.println();
         }
 
     }
@@ -163,19 +161,23 @@ public class BlackjackProtocol {
         notifyAll();
     }
 
-    private synchronized void croupierTurn(PrintWriter out) {
+    private synchronized void croupierTurn() {
         croupier.setHidenCard(false);
-        out.println("Krupier odkrywa karte:");
-        out.println(croupier.getVisibleCards());
 
-        int points = croupier.getScore();
-        if (points < 17) {
-            do {
-                croupier.addCard(deck.draw());
-                points = croupier.getScore();
-                croupier.printCards(out);
-            } while (points < 16);
+        for (ClientHandler handler : BlackjackServer.clientHandlers) {
+            PrintWriter out = handler.getWriter();
+
+            out.println("Krupier odkrywa karte:");
+            out.println(croupier.getVisibleCards());int points = croupier.getScore();
+            if (points < 17) {
+                do {
+                    croupier.addCard(deck.draw());
+                    points = croupier.getScore();
+                    croupier.printCards(out);
+                } while (points < 16);
+            }
         }
+        croupier.setHidenCard(true);
     }
 
     private synchronized void checkWinners() {
@@ -216,6 +218,26 @@ public class BlackjackProtocol {
         }
     }
 
+    private void resetGame() {
+        BlackjackServer.finishedPlayers = 0;
+        BlackjackServer.gameStarted = false;
+        PlayerIndex = 0;
+
+        for (Player player : BlackjackServer.players) {
+            player.setRoundResult(Player.RoundResult.NULL);
+            player.setReady(false);
+            player.resetHand();
+            player.setScore(0);
+        }
+
+        croupier.resetCards();
+        croupier.setScore(0);
+
+        synchronized (BlackjackServer.class) {
+            BlackjackServer.class.notifyAll();
+        }
+    }
+
     private synchronized boolean isAllPLayersReady() {
         for (Player player : BlackjackServer.players) {
             if (!player.isReady()) return false;
@@ -231,14 +253,17 @@ public class BlackjackProtocol {
 
             if (input.equals("START")) {
                 player.setReady(true);
+                out.println("Oczekiwanie na reszte graczy...");
                 break;
+            } else if (input.equals("QUIT")) {
+                out.println();
             } else {
                 out.println("Nieznana komenda");
             }
         }
-        out.println("Oczekiwanie na reszte graczy...");
-        synchronized (this) {
-            notifyAll();
+
+        synchronized (BlackjackServer.class) {
+            BlackjackServer.class.notifyAll();
         }
 
     }

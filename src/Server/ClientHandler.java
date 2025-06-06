@@ -24,7 +24,6 @@ public class ClientHandler implements Runnable {
         return player;
     }
 
-
     public void run() {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -33,11 +32,12 @@ public class ClientHandler implements Runnable {
             out.println("Witaj! Podaj swój nick:");
             String name = in.readLine();
             player = new Player(name);
-
             out.println("Witaj " + player.getPlayerName());
 
-            BlackjackServer.players.add(player);
-            BlackjackServer.clientHandlers.add(this);
+            synchronized (BlackjackServer.class){
+                BlackjackServer.players.add(player);
+                BlackjackServer.clientHandlers.add(this);
+            }
 
             BlackjackServer.blackjackProtocol.runGame(player, in, out);
 

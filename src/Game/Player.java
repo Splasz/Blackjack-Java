@@ -19,10 +19,6 @@ public class Player {
     public String getPlayerName() {
         return name;
     }
-    public void setPlayerName(String playerName) {
-        this.name = playerName;
-    }
-
     public int getScore() {
         return score;
     }
@@ -37,7 +33,6 @@ public class Player {
     }
     public void setRoundResult(RoundResult roundResult) {
         this.roundResult = roundResult;
-
     }
     public boolean isReady() {
         return ready;
@@ -48,7 +43,9 @@ public class Player {
     public String getHandString() {
         return hand.toString() + "\nPunkty: " + score;
     }
-
+    public void resetHand() {
+        hand.clear();
+    }
     public void addCard(Card card) {
         hand.add(card);
         score += card.getIntValue(score);

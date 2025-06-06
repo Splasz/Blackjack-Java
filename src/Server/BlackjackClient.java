@@ -35,13 +35,6 @@ public class BlackjackClient {
 
                 if (command.equalsIgnoreCase("QUIT")) {
                     System.out.println("Zamykam połączenie.");
-                    try {
-                        BlackjackServer.players.removeLast();
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                    }
-
-
                     break;
                 }
             }
