@@ -57,7 +57,7 @@ public class BlackjackProtocol {
                     BlackjackServer.class.notifyAll();
                 }
             }
-            resetGame();
+            resetGame(out);
         }
     }
 
@@ -73,8 +73,8 @@ public class BlackjackProtocol {
 
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
-
-            out.println("=== START GRY ===");
+            String start = buildCenteredLine("START GRY", 68, '=');
+            out.println(start);
 
 
             for (Player player : BlackjackServer.players) {
@@ -98,11 +98,12 @@ public class BlackjackProtocol {
         }
 
         out.println();
-        out.println("Twoja tura!");
+        String turn = buildCenteredLine("TWOJA TURA", 68, '=');
+        out.println(turn);
         out.println(player.getHandString());
         out.println();
 
-        out.println("Wpisz HIT(aby dobrac karte) lub STAND(aby spasować)");
+        out.println("HIT(aby dobrac karte) lub STAND(aby spasować)");
 
         String input;
         while ((input = in.readLine()) != null) {
@@ -125,6 +126,7 @@ public class BlackjackProtocol {
                 }
             } else {
                 out.println("Przegrałeś");
+                out.println();
                 player.setRoundResult(Player.RoundResult.LOSE);
                 nextPlayer();
                 return;
@@ -132,13 +134,6 @@ public class BlackjackProtocol {
 
         }
         nextPlayer();
-
-        if (PlayerIndex == BlackjackServer.players.size()) {
-            out.println("Koniec rundy oto wyniki:");
-            for (Player player2 : BlackjackServer.players) {
-                out.println(player2.getRoundResult());
-            }
-        }
     }
 
     private synchronized void endRound() {
@@ -146,7 +141,8 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
 
-            out.println("=== Koniec rundy ===:");
+            String centered = buildCenteredLine("KONIEC RUNDY", 67, '=');
+            out.println(centered);
             out.println("Wyniki:");
             for (Player player : BlackjackServer.players) {
                 out.println(player.getPlayerName() + ": " + player.getRoundResult());
@@ -167,7 +163,8 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
 
-            out.println("Krupier odkrywa karte:");
+            String header = buildCenteredLine("TURA KRUPIERA", 67, '=');
+            out.println(header);
             out.println(croupier.getVisibleCards());int points = croupier.getScore();
             if (points < 17) {
                 do {
@@ -218,10 +215,16 @@ public class BlackjackProtocol {
         }
     }
 
-    private void resetGame() {
+    private void resetGame(PrintWriter out) {
         BlackjackServer.finishedPlayers = 0;
         BlackjackServer.gameStarted = false;
         PlayerIndex = 0;
+
+        for (ClientHandler handler : BlackjackServer.clientHandlers) {
+            PrintWriter clientOut = handler.getWriter();
+            clientOut.println("CONSOLE:END");
+            clientOut.flush();
+        }
 
         for (Player player : BlackjackServer.players) {
             player.setRoundResult(Player.RoundResult.NULL);
@@ -246,7 +249,7 @@ public class BlackjackProtocol {
     }
 
     private void isPlayerReady(Player player, BufferedReader in, PrintWriter out) throws IOException {
-        out.println("Wpisz `START` aby zacząć lub `QUIT` aby wyjść");
+        out.println("`START` aby zacząć lub `QUIT` aby wyjść");
         String input;
         while ((input = in.readLine()) != null) {
             input = input.trim().toUpperCase();
@@ -284,5 +287,11 @@ public class BlackjackProtocol {
         return croupier.getCards().size() == 2 && croupier.getScore() == 21;
     }
 
+    private String buildCenteredLine(String text, int totalWidth, char filler) {
+        int padding = totalWidth - text.length() - 2;
+        int left = padding / 2;
+        int right = padding - left;
 
+        return String.valueOf(filler).repeat(left) + " " + text + " " + String.valueOf(filler).repeat(right);
+    }
 }

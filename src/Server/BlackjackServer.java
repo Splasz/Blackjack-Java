@@ -1,9 +1,7 @@
 package Server;
 
 import Game.Player;
-
 import java.net.*;
-
 import java.util.*;
 
 public class BlackjackServer {
