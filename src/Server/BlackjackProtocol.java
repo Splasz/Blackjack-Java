@@ -83,6 +83,8 @@ public class BlackjackProtocol {
                 out.println();
             }
             out.println("Krupier: " + croupier.getVisibleCards());
+            out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
+            out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", croupier.getScore()));
             out.flush();
         }
     }

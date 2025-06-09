@@ -1,2 +1,2 @@
-# Blackjack-Java
-Server-Client Blackjack game in Java
+# GUI.BlackjackGUI-Java
+Server-Client GUI.BlackjackGUI game in Java

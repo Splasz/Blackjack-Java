@@ -15,7 +15,7 @@ public class BlackjackClient {
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              Scanner scanner = new Scanner(System.in)) {
 
-            System.out.println("Połączono z serwerem Blackjack.");
+            System.out.println("Połączono z serwerem GUI.Blackjack.");
 
             String response;
             while ((response = in.readLine()) != null && !response.isEmpty()) {

@@ -9,7 +9,11 @@ public class Croupier {
     private boolean hidenCard = true;
 
     public int getScore() {
-        return score;
+        if (hidenCard && cards.size() > 1) {
+            return cards.get(0).getIntValue(score, this);
+        } else {
+            return score;
+        }
     }
     public void setScore(int score) {
         this.score = score;
@@ -25,9 +29,9 @@ public class Croupier {
     }
     public String getVisibleCards() {
         if (hidenCard && cards.size() > 1) {
-            return "[" + cards.get(0).toString() + ", ???]\nPunkty: " + cards.get(0).getIntValue(score, this);
+            return "" + cards.get(0).toString() + ", ???";
         } else {
-            return cards.toString() + "\nPunkty: " + score;
+            return cards.toString();
         }
     }
     public void resetCards() {
