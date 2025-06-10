@@ -10,9 +10,9 @@ public class BlackjackGUI {
     public JButton standButton;
     public JTextField CroupierCards;
     public JTextField CroupierPoints;
-    private JTextField PlayerCards;
-    private JTextField PlayerPoints;
-    private JPanel Main;
+    public JTextField PlayerCards;
+    public JTextField PlayerPoints;
+    private JPanel MainPanel;
     private JPanel GameLog;
     private JPanel InfoCard;
     private JPanel Buttons;
@@ -24,7 +24,7 @@ public class BlackjackGUI {
     private JLabel PlayerLabel;
 
     public JPanel getMainPanel() {
-        return Main;
+        return MainPanel;
     }
 
     public JButton getStartButton() {

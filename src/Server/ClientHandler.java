@@ -42,6 +42,21 @@ public class ClientHandler implements Runnable {
 
         } catch (IOException e) {
             System.err.println("Błąd klienta.");
+        } finally {
+            synchronized (BlackjackServer.class) {
+                if (player != null) {
+                    BlackjackServer.players.remove(player);
+                    BlackjackServer.clientHandlers.remove(this);
+                    System.out.println("Gracz " + player.getPlayerName() + " opuścił grę.");
+                }
+                try {
+                    if (socket != null && !socket.isClosed()) {
+                        socket.close();
+                    }
+                } catch (IOException e) {
+                    System.err.println("Błąd przy zamykaniu połączenia.");
+                }
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ public class BlackjackProtocol {
                     BlackjackServer.class.notifyAll();
                 }
             }
-            resetGame(out);
+            resetGame();
         }
     }
 
@@ -80,6 +80,8 @@ public class BlackjackProtocol {
             for (Player player : BlackjackServer.players) {
                 out.println("Gracz: " + player.getPlayerName());
                 out.println("Karty: " + player.getHandString());
+                out.println(String.format("CONSOLE:type=%s;field=CARDS;value=%s", player.getPlayerName(), player.getHandString()));
+                out.println(String.format("CONSOLE:type=%s;field=POINTS;value=%d", player.getPlayerName(), player.getScore()));
                 out.println();
             }
             out.println("Krupier: " + croupier.getVisibleCards());
@@ -116,6 +118,8 @@ public class BlackjackProtocol {
 
                         player.addCard(deck.draw());
                         out.println(player.getHandString());
+                        out.println(String.format("CONSOLE:type=%s;field=CARDS;value=%s", player.getPlayerName(), player.getHandString()));
+                        out.println(String.format("CONSOLE:type=%s;field=POINTS;value=%d", player.getPlayerName(), player.getScore()));
                         break;
 
                     case "STAND":
@@ -167,16 +171,22 @@ public class BlackjackProtocol {
 
             String header = buildCenteredLine("TURA KRUPIERA", 67, '=');
             out.println(header);
-            out.println(croupier.getVisibleCards());int points = croupier.getScore();
+            out.println(croupier.getVisibleCards());
+            out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
+            out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", croupier.getScore()));
+
+            int points = croupier.getScore();
             if (points < 17) {
                 do {
+                    out.println("Krupier dobiera...");
                     croupier.addCard(deck.draw());
                     points = croupier.getScore();
                     croupier.printCards(out);
+                    out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
+                    out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", points));
                 } while (points < 16);
             }
         }
-        croupier.setHidenCard(true);
     }
 
     private synchronized void checkWinners() {
@@ -217,10 +227,11 @@ public class BlackjackProtocol {
         }
     }
 
-    private void resetGame(PrintWriter out) {
+    private void resetGame() {
         BlackjackServer.finishedPlayers = 0;
         BlackjackServer.gameStarted = false;
         PlayerIndex = 0;
+        croupier.setHidenCard(true);
 
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter clientOut = handler.getWriter();

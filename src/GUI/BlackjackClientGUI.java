@@ -1,5 +1,8 @@
 package GUI;
 
+import Game.Player;
+import Server.BlackjackServer;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
@@ -10,6 +13,7 @@ public class BlackjackClientGUI extends JFrame {
     private PrintWriter out;
     private BufferedReader in;
     private Socket socket;
+    private String playerName;
 
     private final BlackjackGUI blackjackUI;
 
@@ -56,6 +60,7 @@ public class BlackjackClientGUI extends JFrame {
             out = new PrintWriter(socket.getOutputStream(), true);
 
             String name = JOptionPane.showInputDialog(this, "Podaj swój nick:");
+            playerName = name;
             if (name != null && !name.trim().isEmpty()) {
                 out.println(name);
             }
@@ -92,15 +97,21 @@ public class BlackjackClientGUI extends JFrame {
                 }
             }
 
-            String type = map.get("type");   // np. "CROUPIER"
-            String field = map.get("field"); // np. "POINTS"
-            String value = map.get("value"); // np. "17"
+            String type = map.get("type");
+            String field = map.get("field");
+            String value = map.get("value");
 
             if ("croupier".equalsIgnoreCase(type) && "points".equalsIgnoreCase(field)) {
                 blackjackUI.CroupierPoints.setText(value);
             }
             if ("croupier".equalsIgnoreCase(type) && "cards".equalsIgnoreCase(field)) {
                 blackjackUI.CroupierCards.setText(value);
+            }
+            if (playerName.equalsIgnoreCase(type) && "points".equalsIgnoreCase(field)) {
+                blackjackUI.PlayerPoints.setText(value);
+            }
+            if (playerName.equalsIgnoreCase(type) && "cards".equalsIgnoreCase(field)) {
+                blackjackUI.PlayerCards.setText(value);
             }
 
             if (response.contains("END")) {

@@ -10,7 +10,6 @@ public class BlackjackServer {
     public static final BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
     public static int finishedPlayers = 0;
 
-
     public static boolean gameStarted = false;
 
     public static void main(String[] args) {
@@ -26,8 +25,8 @@ public class BlackjackServer {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
+
+
 
 }
