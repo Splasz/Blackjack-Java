@@ -1,8 +1,5 @@
 package GUI;
 
-import Game.Player;
-import Server.BlackjackServer;
-
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
@@ -18,7 +15,7 @@ public class BlackjackClientGUI extends JFrame {
     private final BlackjackGUI blackjackUI;
 
     public BlackjackClientGUI() {
-        setTitle("GUI.Blackjack");
+        setTitle("Blackjack Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
@@ -113,8 +110,22 @@ public class BlackjackClientGUI extends JFrame {
             if (playerName.equalsIgnoreCase(type) && "cards".equalsIgnoreCase(field)) {
                 blackjackUI.PlayerCards.setText(value);
             }
+            if (playerName.equalsIgnoreCase(type) && "result".equalsIgnoreCase(field)) {
+                switch (value) {
+                    case "BLACKJACK":
+                    case "WIN":
+                        JOptionPane.showMessageDialog(this, "Wygrałeś rundę!", "Zwycięstwo " + playerName,JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                    case "LOSE":
+                        JOptionPane.showMessageDialog(this, "Przegrałeś rundę!", "Porażka " + playerName,JOptionPane.WARNING_MESSAGE);
+                        break;
+                    case "DRAW":
+                        JOptionPane.showMessageDialog(this, "Remis", "Remis " + playerName,JOptionPane.PLAIN_MESSAGE);
+                        break;
+                }
+            }
 
-            if (response.contains("END")) {
+            if ("end".equalsIgnoreCase(type)) {
                 blackjackUI.hitButton.setVisible(false);
                 blackjackUI.standButton.setVisible(false);
                 blackjackUI.startButton.setVisible(true);

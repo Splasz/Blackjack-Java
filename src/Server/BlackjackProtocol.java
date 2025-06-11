@@ -17,7 +17,6 @@ public class BlackjackProtocol {
         deck.shuffle();
     }
 
-
     public void runGame(Player player, BufferedReader in, PrintWriter out) throws IOException {
 
         while (true) {
@@ -53,7 +52,6 @@ public class BlackjackProtocol {
                     croupierTurn();
                     endRound();
 
-
                     BlackjackServer.class.notifyAll();
                 }
             }
@@ -73,7 +71,7 @@ public class BlackjackProtocol {
 
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
-            String start = buildCenteredLine("START GRY", 68, '=');
+            String start = buildCenteredLine("START GRY", 50, '=');
             out.println(start);
 
 
@@ -85,6 +83,7 @@ public class BlackjackProtocol {
                 out.println();
             }
             out.println("Krupier: " + croupier.getVisibleCards());
+            out.println("Punkty: " + croupier.getScore());
             out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
             out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", croupier.getScore()));
             out.flush();
@@ -102,11 +101,8 @@ public class BlackjackProtocol {
         }
 
         out.println();
-        String turn = buildCenteredLine("TWOJA TURA", 68, '=');
+        String turn = buildCenteredLine("TWOJA TURA", 50, '=');
         out.println(turn);
-        out.println(player.getHandString());
-        out.println();
-
         out.println("HIT(aby dobrac karte) lub STAND(aby spasować)");
 
         String input;
@@ -147,11 +143,13 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
 
-            String centered = buildCenteredLine("KONIEC RUNDY", 67, '=');
+            String centered = buildCenteredLine("KONIEC RUNDY", 50, '=');
             out.println(centered);
             out.println("Wyniki:");
             for (Player player : BlackjackServer.players) {
                 out.println(player.getPlayerName() + ": " + player.getRoundResult());
+                out.println(String.format("CONSOLE:type=%s;field=RESULT;value=%s", player.getPlayerName(), player.getRoundResult()));
+
             }
             out.println();
         }
@@ -169,9 +167,8 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
 
-            String header = buildCenteredLine("TURA KRUPIERA", 67, '=');
+            String header = buildCenteredLine("TURA KRUPIERA", 51, '=');
             out.println(header);
-            out.println(croupier.getVisibleCards());
             out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
             out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", croupier.getScore()));
 
@@ -185,6 +182,9 @@ public class BlackjackProtocol {
                     out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
                     out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", points));
                 } while (points < 16);
+            }else {
+                out.println("Karty Krupiera:");
+                out.println(croupier.getVisibleCards());
             }
         }
     }
@@ -235,7 +235,7 @@ public class BlackjackProtocol {
 
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter clientOut = handler.getWriter();
-            clientOut.println("CONSOLE:END");
+            clientOut.println("CONSOLE:type=END");
             clientOut.flush();
         }
 

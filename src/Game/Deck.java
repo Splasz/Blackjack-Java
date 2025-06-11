@@ -15,15 +15,10 @@ public class Deck {
             deck.add(card);
         }
     }
-
     public Card draw() {
         if (deck.isEmpty()) {
             shuffle();
         }
         return deck.remove(deck.size() - 1);
-    }
-
-    public void print() {
-        System.out.println(deck);
     }
 }

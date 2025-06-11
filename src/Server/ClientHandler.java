@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
-    private Socket socket;
+    private final Socket socket;
     private Player player;
     private BufferedReader in;
     private PrintWriter out;
@@ -19,9 +19,6 @@ public class ClientHandler implements Runnable {
     }
     public PrintWriter getWriter() {
         return out;
-    }
-    public Player getPlayer() {
-        return player;
     }
 
     public void run() {

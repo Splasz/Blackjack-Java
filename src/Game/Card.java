@@ -9,12 +9,6 @@ public class Card {
         this.suit = suit;
     }
 
-    public String getValue() {
-        return value;
-    }
-    public String getSuit() {
-        return suit;
-    }
     public int getIntValue(int points){
         switch (value){
             case "2": return 2;

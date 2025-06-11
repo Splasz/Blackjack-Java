@@ -41,7 +41,7 @@ public class Player {
         this.ready = ready;
     }
     public String getHandString() {
-        return hand.toString() + "\nPunkty: " + score;
+        return hand.toString();
     }
     public void resetHand() {
         hand.clear();
@@ -49,10 +49,5 @@ public class Player {
     public void addCard(Card card) {
         hand.add(card);
         score += card.getIntValue(score);
-    }
-    public void printHand() {
-        System.out.println(hand);
-        System.out.println("Punkty: " + score);
-        System.out.println();
     }
 }

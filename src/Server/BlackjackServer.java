@@ -9,11 +9,9 @@ public class BlackjackServer {
     public static List<ClientHandler> clientHandlers = new ArrayList<>();
     public static final BlackjackProtocol blackjackProtocol = new BlackjackProtocol();
     public static int finishedPlayers = 0;
-
     public static boolean gameStarted = false;
 
     public static void main(String[] args) {
-
         try (ServerSocket serverSocket = new ServerSocket(2222)) {
             System.out.println("Serwer uruchomiony...");
             while (true) {
