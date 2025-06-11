@@ -21,7 +21,7 @@ public class BlackjackGUI {
     private JPanel CroupierInfo;
     private JPanel PlayerInfo;
     private JLabel CroupierLabel;
-    private JLabel PlayerLabel;
+    public JLabel PlayerLabel;
 
     public JPanel getMainPanel() {
         return MainPanel;

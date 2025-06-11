@@ -1,5 +1,7 @@
 package GUI;
 
+import Game.Player;
+
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
@@ -7,12 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlackjackClientGUI extends JFrame {
+    private final BlackjackGUI blackjackUI;
     private PrintWriter out;
     private BufferedReader in;
     private Socket socket;
     private String playerName;
-
-    private final BlackjackGUI blackjackUI;
 
     public BlackjackClientGUI() {
         setTitle("Blackjack Game");
@@ -47,7 +48,7 @@ public class BlackjackClientGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(BlackjackClientGUI::new);
+        SwingUtilities.invokeLater(() -> new BlackjackClientGUI());
     }
 
     public void connectToServer() {
@@ -56,11 +57,26 @@ public class BlackjackClientGUI extends JFrame {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            String name = JOptionPane.showInputDialog(this, "Podaj swój nick:");
-            playerName = name;
-            if (name != null && !name.trim().isEmpty()) {
-                out.println(name);
+            String name;
+            while (true) {
+                name = JOptionPane.showInputDialog(this, "Podaj swój nick:");
+
+                if (name == null) {
+                    System.exit(0);
+                } else {
+                    name = name.trim();
+
+                    if (name.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Nick nie może być pusty.",
+                                "Błąd", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        break;
+                    }
+                }
             }
+            playerName = name;
+            blackjackUI.PlayerLabel.setText(playerName);
+            out.println(playerName);
 
             new Thread(() -> {
                 try {
@@ -114,13 +130,13 @@ public class BlackjackClientGUI extends JFrame {
                 switch (value) {
                     case "BLACKJACK":
                     case "WIN":
-                        JOptionPane.showMessageDialog(this, "Wygrałeś rundę!", "Zwycięstwo " + playerName,JOptionPane.INFORMATION_MESSAGE);
-                    break;
+                        JOptionPane.showMessageDialog(this, "Wygrałeś rundę!", "Zwycięstwo " + playerName, JOptionPane.INFORMATION_MESSAGE);
+                        break;
                     case "LOSE":
-                        JOptionPane.showMessageDialog(this, "Przegrałeś rundę!", "Porażka " + playerName,JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Przegrałeś rundę!", "Porażka " + playerName, JOptionPane.WARNING_MESSAGE);
                         break;
                     case "DRAW":
-                        JOptionPane.showMessageDialog(this, "Remis", "Remis " + playerName,JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Remis", "Remis " + playerName, JOptionPane.PLAIN_MESSAGE);
                         break;
                 }
             }
@@ -145,6 +161,7 @@ public class BlackjackClientGUI extends JFrame {
     private void closeConnection() {
         try {
             if (socket != null) socket.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 }

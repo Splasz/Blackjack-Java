@@ -21,6 +21,7 @@ public class BlackjackProtocol {
                 if (!BlackjackServer.gameStarted && isAllPLayersReady()) {
                     startGame();
                     BlackjackServer.gameStarted = true;
+                    BlackjackServer.class.notifyAll();
                 }
             }
 
@@ -74,7 +75,7 @@ public class BlackjackProtocol {
 
             for (Player player : BlackjackServer.players) {
                 out.println("Gracz: " + player.getPlayerName());
-                out.println("Karty: " + player.getHandString());
+                out.println("Karty: " + player.getHandString() + " (" + player.getScore() + ")");
                 out.println(String.format("CONSOLE:type=%s;field=CARDS;value=%s", player.getPlayerName(), player.getHandString()));
                 out.println(String.format("CONSOLE:type=%s;field=POINTS;value=%d", player.getPlayerName(), player.getScore()));
                 out.println();
@@ -141,8 +142,7 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter out = handler.getWriter();
 
-            String header = buildCenteredLine("TURA KRUPIERA", 51, '=');
-            out.println(header);
+            out.println(buildCenteredLine("TURA KRUPIERA", 51, '='));
             out.println(String.format("CONSOLE:type=CROUPIER;field=CARDS;value=%s", croupier.getVisibleCards()));
             out.println(String.format("CONSOLE:type=CROUPIER;field=POINTS;value=%d", croupier.getScore()));
 
@@ -158,7 +158,7 @@ public class BlackjackProtocol {
                 } while (points < 16);
             } else {
                 out.println("Karty Krupiera:");
-                out.println(croupier.getVisibleCards());
+                out.println(croupier.getVisibleCards() + "  (" + points + ")");
             }
         }
     }
@@ -212,7 +212,6 @@ public class BlackjackProtocol {
         for (ClientHandler handler : BlackjackServer.clientHandlers) {
             PrintWriter clientOut = handler.getWriter();
             clientOut.println("CONSOLE:type=END");
-            clientOut.flush();
         }
 
         for (Player player : BlackjackServer.players) {
@@ -239,10 +238,6 @@ public class BlackjackProtocol {
             if (input.equals("START")) {
                 player.setReady(true);
                 out.println("Oczekiwanie na reszte graczy...");
-
-                synchronized (BlackjackServer.class) {
-                    BlackjackServer.class.notifyAll();
-                }
                 break;
             } else {
                 out.println("Nieznana komenda");

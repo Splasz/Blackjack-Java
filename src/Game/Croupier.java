@@ -29,7 +29,7 @@ public class Croupier {
     }
     public String getVisibleCards() {
         if (hidenCard && cards.size() > 1) {
-            return cards.get(0).toString() + ", ???";
+            return "[" + cards.get(0).toString() + ", ???]";
         } else {
             return cards.toString();
         }
